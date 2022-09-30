@@ -86,7 +86,7 @@ namespace Compound_bhaptics
         [HarmonyPostfix]
         public static void Postfix(PlayerController __instance)
         {
-            //Plugin.Log.LogMessage(__instance.DamageableComponent.GetCurrentHealth());
+            Plugin.Log.LogMessage(__instance.DamageableComponent.GetCurrentHealth());
             if (__instance.DamageableComponent.GetCurrentHealth() == 1)
             {
                 Plugin.tactsuitVr.PlaybackHaptics("HeartBeat", false);
