@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compound_bhaptics", "Compound_bhaptics\Compound_bhaptics.csproj", "{F2C703A6-C58B-41AE-8D6B-E096E3679AA5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F2C703A6-C58B-41AE-8D6B-E096E3679AA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2C703A6-C58B-41AE-8D6B-E096E3679AA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2C703A6-C58B-41AE-8D6B-E096E3679AA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2C703A6-C58B-41AE-8D6B-E096E3679AA5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5FD91E07-D38D-4D1E-9197-1717BAF52B60}
+	EndGlobalSection
+EndGlobal
