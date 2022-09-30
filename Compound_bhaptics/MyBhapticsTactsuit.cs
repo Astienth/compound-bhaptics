@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using MelonLoader;
 using UnityEngine;
 
@@ -150,18 +148,6 @@ namespace MyBhapticsTactsuit
             string keyHandsOther = "RecoilHands" + otherPostfix;
             bHaptics.SubmitRegistered(keyVest, keyVest, scaleOption, rotationFront);
             if (twoHanded) bHaptics.SubmitRegistered(keyVestOther, keyVestOther, scaleOption, rotationFront);
-        }
-
-        public void HeadShot(float hitAngle)
-        {
-            if (bHaptics.IsDeviceConnected(bHaptics.DeviceType.Tactal))
-            {
-                if ((hitAngle < 45f) | (hitAngle > 315f)) { PlaybackHaptics("Headshot_F"); }
-                if ((hitAngle > 45f) && (hitAngle < 135f)) { PlaybackHaptics("Headshot_L"); }
-                if ((hitAngle > 135f) && (hitAngle < 225f)) { PlaybackHaptics("Headshot_B"); }
-                if ((hitAngle > 225f) && (hitAngle < 315f)) { PlaybackHaptics("Headshot_R"); }
-            }
-            else { PlayBackHit("BulletHit", hitAngle, 0.5f); }
         }
 
         public void StartHeartBeat()
