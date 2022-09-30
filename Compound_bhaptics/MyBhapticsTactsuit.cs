@@ -90,13 +90,20 @@ namespace MyBhapticsTactsuit
             systemInitialized = true;
         }
 
-        public void PlaybackHaptics(String key, float intensity = 1.0f, float duration = 1.0f)
+        public void PlaybackHaptics(String key, bool forced = true, float intensity = 1.0f, float duration = 1.0f)
         {
             if (suitDisabled) { return; }
             if (FeedbackMap.ContainsKey(key))
             {
                 ScaleOption scaleOption = new ScaleOption(intensity, duration);
-                hapticPlayer.SubmitRegisteredVestRotation(key, key, defaultRotationOption, scaleOption);
+                if (hapticPlayer.IsPlaying() && !forced)
+                {
+                    return;
+                }
+                else
+                {
+                    hapticPlayer.SubmitRegisteredVestRotation(key, key, defaultRotationOption, scaleOption);
+                }
             }
             else
             {
@@ -155,41 +162,6 @@ namespace MyBhapticsTactsuit
             // No tuple returns available in .NET < 4.0, so this is the easiest quickfix
             return new KeyValuePair<float, float>(myRotation, hitShift);
         } **/
-
-        public void GunRecoil(bool isRightHand, string recoilPrefix, float intensity = 1.0f, bool twoHanded = false, bool shoulderStock = false)
-        {
-            if (suitDisabled) { return; }
-            float duration = 1.0f;
-            var scaleOption = new ScaleOption(intensity, duration);
-            var rotationFront = new RotationOption(0f, 0f);
-
-            // assemble the name of the feedback pattern, first left and right
-            string prefix = "Recoil";
-            string postfix = "_L";
-            string otherPostfix = "_R";
-            if (isRightHand) { postfix = "_R"; otherPostfix = "_L"; }
-            // add gun type to the pattern name
-            prefix += recoilPrefix;
-            // hands and arms patterns are the same, no matter if stock pressed against the shoulder
-            string keyHand = prefix + "Hands" + postfix;
-            string keyArm = prefix + "Arms" + postfix;
-            string keyOtherArm = prefix + "Arms" + otherPostfix;
-            string keyOtherHand = prefix + "Hands" + otherPostfix;
-            // change vest pattern if stock is against shoulder
-            if (shoulderStock) { prefix += "Shoulder"; }
-            string keyVest = prefix + "Vest" + postfix;
-            // always play back dominant arm and hand patterns
-            hapticPlayer.SubmitRegisteredVestRotation(keyArm, keyArm, rotationFront, scaleOption);
-            hapticPlayer.SubmitRegisteredVestRotation(keyHand, keyHand, rotationFront, scaleOption);
-            // second hand/arm only if it grabs the gun
-            if (twoHanded)
-            {
-                hapticPlayer.SubmitRegisteredVestRotation(keyOtherArm, keyOtherArm, rotationFront, scaleOption);
-                hapticPlayer.SubmitRegisteredVestRotation(keyOtherHand, keyOtherHand, rotationFront, scaleOption);
-            }
-            // play back vest pattern
-            hapticPlayer.SubmitRegisteredVestRotation(keyVest, keyVest, rotationFront, scaleOption);
-        }
 
         public void StartHeartBeat()
         {

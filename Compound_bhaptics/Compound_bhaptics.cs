@@ -16,9 +16,6 @@ namespace Compound_bhaptics
 #pragma warning restore CS0109
         public static TactsuitVR tactsuitVr;
         public static Vector3 playerPosition;
-        // I couldn't find a way to read out the max health. So this is a global variable hack that
-        // will just store the maximum health ever read.
-        public static float maxHealth = 0f;
 
 
         private void Awake()
@@ -79,6 +76,20 @@ namespace Compound_bhaptics
             } else
             {
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerController), "Update", new Type[] { })]
+    public class bhaptics_LowHealth
+    {
+        [HarmonyPostfix]
+        public static void Postfix(PlayerController __instance)
+        {
+            //Plugin.Log.LogMessage(__instance.DamageableComponent.GetCurrentHealth());
+            if (__instance.DamageableComponent.GetCurrentHealth() == 1)
+            {
+                Plugin.tactsuitVr.PlaybackHaptics("HeartBeat", false);
             }
         }
     }
