@@ -1,53 +1,49 @@
 ﻿using System;
-using MelonLoader;
+using System.Collections.Generic;
+using BepInEx;
+using BepInEx.Logging;
 using HarmonyLib;
+using UnityEngine;
 using MyBhapticsTactsuit;
 
 namespace Compound_bhaptics
 {
-    public class Compound_bhaptics : MelonMod
+    [BepInPlugin("org.bepinex.plugins.Compound_bhaptics", "Compound bhaptics integration", "1.4")]
+    public class Plugin : BaseUnityPlugin
     {
+#pragma warning disable CS0109 // Remove unnecessary warning
+        internal static new ManualLogSource Log;
+#pragma warning restore CS0109
         public static TactsuitVR tactsuitVr;
-        public static bool playerRightHanded = true;
+        public static Vector3 playerPosition;
+        // I couldn't find a way to read out the max health. So this is a global variable hack that
+        // will just store the maximum health ever read.
+        public static float maxHealth = 0f;
 
-        public override void OnInitializeMelon()
+
+        private void Awake()
         {
-            //base.OnApplicationStart();
+            // Make my own logger so it can be accessed from the Tactsuit class
+            Log = base.Logger;
+            // Plugin startup logic
+            Logger.LogMessage("Plugin Compound_bhaptics is loaded!");
             tactsuitVr = new TactsuitVR();
+            // one startup heartbeat so you know the vest works correctly
             tactsuitVr.PlaybackHaptics("HeartBeat");
+            // patch all functions
+            var harmony = new Harmony("bhaptics.patch.compound");
+            harmony.PatchAll();
         }
+    }
 
-        [HarmonyPatch(typeof(SLZ.Data.SaveData.PlayerSettings), "OnPropertyChanged", new Type[] { typeof(string) })]
-        public class bhaptics_PropertyChanged
+    [HarmonyPatch(typeof(Food), "OnEat", new Type[] { })]
+    public class bhaptics_OnEat
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
         {
-            [HarmonyPostfix]
-            public static void Postfix(SLZ.Data.SaveData.PlayerSettings __instance)
-            {
-                playerRightHanded = __instance.RightHanded;
-            }
-        }
-
-
-
-        [HarmonyPatch(typeof(Player_Health), "Death", new Type[] { })]
-        public class bhaptics_PlayerDeath
-        {
-            [HarmonyPostfix]
-            public static void Postfix(Player_Health __instance)
-            {
-                tactsuitVr.StopThreads();
-            }
-        }
-
-        [HarmonyPatch(typeof(Player_Health), "Update", new Type[] { })]
-        public class bhaptics_PlayerHealthUpdate
-        {
-            [HarmonyPostfix]
-            public static void Postfix(Player_Health __instance)
-            {
-                if (__instance.curr_Health <= 0.3f * __instance.max_Health) tactsuitVr.StartHeartBeat();
-                else tactsuitVr.StopHeartBeat();
-            }
+            Plugin.tactsuitVr.PlaybackHaptics("Eating");
         }
     }
 }
+
