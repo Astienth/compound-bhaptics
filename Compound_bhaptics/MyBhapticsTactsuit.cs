@@ -115,7 +115,7 @@ namespace MyBhapticsTactsuit
             hapticPlayer.SubmitRegisteredVestRotation(key, key, rotationOption, scaleOption);
         }
 
-        public static KeyValuePair<float, float> getAngleAndShift(PlayerController player, Vector3 hit)
+        /** public static KeyValuePair<float, float> getAngleAndShift(PlayerController player, Vector3 hit)
         {
             // bhaptics starts in the front, then rotates to the left. 0° is front, 90° is left, 270° is right.
             // y is "up", z is "forward" in local coordinates
@@ -154,7 +154,7 @@ namespace MyBhapticsTactsuit
 
             // No tuple returns available in .NET < 4.0, so this is the easiest quickfix
             return new KeyValuePair<float, float>(myRotation, hitShift);
-        }
+        } **/
 
         public void GunRecoil(bool isRightHand, string recoilPrefix, float intensity = 1.0f, bool twoHanded = false, bool shoulderStock = false)
         {

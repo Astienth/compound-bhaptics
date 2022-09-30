@@ -45,5 +45,25 @@ namespace Compound_bhaptics
             Plugin.tactsuitVr.PlaybackHaptics("Eating");
         }
     }
+
+    [HarmonyPatch(typeof(PlayerController), "OnDeath", new Type[] { })]
+    public class bhaptics_OnDeath
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            Plugin.tactsuitVr.PlaybackHaptics("Death");
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerController), "OnHurt", new Type[] { })]
+    public class bhaptics_OnHurt
+    {
+        [HarmonyPostfix]
+        public static void Postfix(PlayerController __instance)
+        {
+            Plugin.tactsuitVr.PlaybackHaptics("BulletHit");
+        }
+    }
 }
 
