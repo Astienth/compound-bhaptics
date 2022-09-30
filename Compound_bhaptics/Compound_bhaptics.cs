@@ -65,5 +65,22 @@ namespace Compound_bhaptics
             Plugin.tactsuitVr.PlaybackHaptics("BulletHit");
         }
     }
+
+    [HarmonyPatch(typeof(GunController), "Fire", new Type[] { })]
+    public class bhaptics_Fire
+    {
+        [HarmonyPostfix]
+        public static void Postfix(GunController __instance)
+        {
+            if (Traverse.Create(__instance).Property("IsLeftHandedGun").GetValue<Boolean>())
+
+            {
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_L");
+            } else
+            {
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+            }
+        }
+    }
 }
 
