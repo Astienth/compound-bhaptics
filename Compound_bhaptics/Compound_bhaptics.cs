@@ -103,5 +103,15 @@ namespace Compound_bhaptics
             Plugin.tactsuitVr.PlaybackHaptics("Shower", false, 0.4f);
         }
     }
+
+    [HarmonyPatch(typeof(SyringeController), "Inject")]
+    public class bhaptics_SyringeController
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            Plugin.tactsuitVr.PlaybackHaptics("SuperPower");
+        }
+    }
 }
 
