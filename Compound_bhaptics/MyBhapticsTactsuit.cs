@@ -43,7 +43,7 @@ namespace MyBhapticsTactsuit
             try
             {
 #pragma warning disable CS0618 // remove warning that the C# library is deprecated
-                hapticPlayer = new HapticPlayer("H3VR_bhaptics", "H3VR_bhaptics");
+                hapticPlayer = new HapticPlayer("Compound_bhaptics", "Compound_bhaptics");
 #pragma warning restore CS0618
                 suitDisabled = false;
             }
@@ -122,46 +122,45 @@ namespace MyBhapticsTactsuit
             hapticPlayer.SubmitRegisteredVestRotation(key, key, rotationOption, scaleOption);
         }
 
-        /** public static KeyValuePair<float, float> getAngleAndShift(PlayerController player, Vector3 hit)
+        public static KeyValuePair<float, float> getAngleAndShift(Transform player, Vector3 hit)
         {
-            // bhaptics starts in the front, then rotates to the left. 0° is front, 90° is left, 270° is right.
+            // bhaptics pattern starts in the front, then rotates to the left. 0° is front, 90° is left, 270° is right.
             // y is "up", z is "forward" in local coordinates
             Vector3 patternOrigin = new Vector3(0f, 0f, 1f);
-            Vector3 hitPosition = hit - player.TorsoTransform.position;
-            Quaternion PlayerRotation = player.TorsoTransform.rotation;
-            Vector3 playerDir = PlayerRotation.eulerAngles;
+            Vector3 hitPosition = hit - player.position;
+            Quaternion myPlayerRotation = player.rotation;
+            Vector3 playerDir = myPlayerRotation.eulerAngles;
             // get rid of the up/down component to analyze xz-rotation
             Vector3 flattenedHit = new Vector3(hitPosition.x, 0f, hitPosition.z);
 
             // get angle. .Net < 4.0 does not have a "SignedAngle" function...
-            float earlyhitAngle = Vector3.Angle(flattenedHit, patternOrigin);
+            float hitAngle = Vector3.Angle(flattenedHit, patternOrigin);
             // check if cross product points up or down, to make signed angle myself
-            Vector3 earlycrossProduct = Vector3.Cross(flattenedHit, patternOrigin);
-            if (earlycrossProduct.y > 0f) { earlyhitAngle *= -1f; }
+            Vector3 crossProduct = Vector3.Cross(flattenedHit, patternOrigin);
+            if (crossProduct.y < 0f) { hitAngle *= -1f; }
             // relative to player direction
-            float myRotation = earlyhitAngle - playerDir.y;
+            float myRotation = hitAngle - playerDir.y;
             // switch directions (bhaptics angles are in mathematically negative direction)
             myRotation *= -1f;
             // convert signed angle into [0, 360] rotation
             if (myRotation < 0f) { myRotation = 360f + myRotation; }
 
+
             // up/down shift is in y-direction
-            float hitShift = hitPosition.y;
-            // in H3VR, the TorsoTransform has y=0 at the neck,
+            // in Battle Sister, the torso Transform has y=0 at the neck,
             // and the torso ends at roughly -0.5 (that's in meters)
             // so cap the shift to [-0.5, 0]...
-            if (hitShift > 0.0f) { hitShift = 0.5f; }
-            else if (hitShift < -0.5f) { hitShift = -0.5f; }
-            // ...and then spread/shift it to [-0.5, 0.5]
-            else { hitShift = (hitShift + 0.5f) * 2.0f - 0.5f; }
-
-            //tactsuitVr.LOG("Relative x-z-position: " + relativeHitDir.x.ToString() + " "  + relativeHitDir.z.ToString());
-            //tactsuitVr.LOG("HitAngle: " + hitAngle.ToString());
-            //tactsuitVr.LOG("HitShift: " + hitShift.ToString());
+            float hitShift = hitPosition.y;
+            float upperBound = -4.5f;
+            float lowerBound = -5.5f;
+            if (hitShift > upperBound) { hitShift = 0.5f; }
+            else if (hitShift < lowerBound) { hitShift = -0.5f; }
+            // ...and then spread/shift it to [-0.5, 0.5], which is how bhaptics expects it
+            else { hitShift = (hitShift - lowerBound) / (upperBound - lowerBound) - 0.5f; }
 
             // No tuple returns available in .NET < 4.0, so this is the easiest quickfix
             return new KeyValuePair<float, float>(myRotation, hitShift);
-        } **/
+        }
 
         public void StartHeartBeat()
         {

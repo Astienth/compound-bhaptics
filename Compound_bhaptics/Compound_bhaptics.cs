@@ -15,7 +15,6 @@ namespace Compound_bhaptics
         internal static new ManualLogSource Log;
 #pragma warning restore CS0109
         public static TactsuitVR tactsuitVr;
-        public static Vector3 playerPosition;
 
 
         private void Awake()
@@ -59,7 +58,8 @@ namespace Compound_bhaptics
         [HarmonyPostfix]
         public static void Postfix(PlayerController __instance)
         {
-            Plugin.tactsuitVr.PlaybackHaptics("BulletHit");
+            var angleShift = TactsuitVR.getAngleAndShift(__instance.transform.parent, __instance.DamageableComponent.HitObject.transform.position);
+            Plugin.tactsuitVr.PlayBackHit("BulletHit", angleShift.Key, angleShift.Value);
         }
     }
 
@@ -86,11 +86,21 @@ namespace Compound_bhaptics
         [HarmonyPostfix]
         public static void Postfix(PlayerController __instance)
         {
-            Plugin.Log.LogMessage(__instance.DamageableComponent.GetCurrentHealth());
+            //Plugin.Log.LogMessage(__instance.DamageableComponent.GetCurrentHealth());
             if (__instance.DamageableComponent.GetCurrentHealth() == 1)
             {
                 Plugin.tactsuitVr.PlaybackHaptics("HeartBeat", false);
             }
+        }
+    }
+    
+    [HarmonyPatch(typeof(MutatorDisabler), "OnTriggerStay")]
+    public class bhaptics_Shower
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            Plugin.tactsuitVr.PlaybackHaptics("Shower", false, 0.4f);
         }
     }
 }
