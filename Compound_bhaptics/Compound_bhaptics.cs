@@ -38,6 +38,10 @@ namespace Compound_bhaptics
         [HarmonyPostfix]
         public static void Postfix()
         {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
             Plugin.tactsuitVr.PlaybackHaptics("Eating");
         }
     }
@@ -48,6 +52,10 @@ namespace Compound_bhaptics
         [HarmonyPostfix]
         public static void Postfix()
         {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
             Plugin.tactsuitVr.PlaybackHaptics("Death");
         }
     }
@@ -58,6 +66,10 @@ namespace Compound_bhaptics
         [HarmonyPostfix]
         public static void Postfix(PlayerController __instance)
         {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
             var angleShift = TactsuitVR.getAngleAndShift(__instance.transform.parent, __instance.DamageableComponent.HitObject.transform.position);
             Plugin.tactsuitVr.PlayBackHit("BulletHit", angleShift.Key, angleShift.Value);
         }
@@ -69,6 +81,10 @@ namespace Compound_bhaptics
         [HarmonyPostfix]
         public static void Postfix(GunController __instance)
         {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
             if (Traverse.Create(__instance).Property("IsLeftHandedGun").GetValue<Boolean>())
 
             {
@@ -86,6 +102,10 @@ namespace Compound_bhaptics
         [HarmonyPostfix]
         public static void Postfix(PlayerController __instance)
         {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
             //Plugin.Log.LogMessage(__instance.DamageableComponent.GetCurrentHealth());
             if (__instance.DamageableComponent.GetCurrentHealth() == 1)
             {
@@ -100,6 +120,10 @@ namespace Compound_bhaptics
         [HarmonyPostfix]
         public static void Postfix()
         {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
             Plugin.tactsuitVr.PlaybackHaptics("Shower", false, 0.4f);
         }
     }
@@ -110,6 +134,10 @@ namespace Compound_bhaptics
         [HarmonyPostfix]
         public static void Postfix()
         {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
             Plugin.tactsuitVr.PlaybackHaptics("SuperPower");
         }
     }
