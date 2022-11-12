@@ -93,7 +93,7 @@ namespace Compound_bhaptics
             } else
             {
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
-                Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_L");
+                Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
             }
         }
     }
@@ -127,8 +127,8 @@ namespace Compound_bhaptics
                 return;
             }
             Plugin.tactsuitVr.PlaybackHaptics("Shower", false, 0.4f);
-            Plugin.tactsuitVr.PlaybackHaptics("shower_L");
-            Plugin.tactsuitVr.PlaybackHaptics("shower_R");
+            Plugin.tactsuitVr.PlaybackHaptics("shower_L", false, 0.4f);
+            Plugin.tactsuitVr.PlaybackHaptics("shower_R", false, 0.4f);
         }
     }
 
