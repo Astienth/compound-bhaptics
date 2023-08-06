@@ -5,6 +5,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using UnityEngine;
 using MyBhapticsTactsuit;
+using Object = UnityEngine.Object;
 
 namespace Compound_bhaptics
 {
@@ -16,6 +17,7 @@ namespace Compound_bhaptics
 #pragma warning restore CS0109
         public static TactsuitVR tactsuitVr;
 
+        public static bool twoHanded = false;
 
         private void Awake()
         {
@@ -42,6 +44,7 @@ namespace Compound_bhaptics
             {
                 return;
             }
+            Plugin.tactsuitVr.PlaybackHaptics("eatingvisor");
             Plugin.tactsuitVr.PlaybackHaptics("Eating");
             Plugin.tactsuitVr.PlaybackHaptics("firevisor");
         }
@@ -78,6 +81,27 @@ namespace Compound_bhaptics
         }
     }
 
+    [HarmonyPatch(typeof(Grabber), "TwoHandGrabModeUpdate")]
+    public class bhaptics_twohanded
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            Plugin.twoHanded = true;
+        }
+    }
+    
+    [HarmonyPatch(typeof(Grabber), "OneHandGrabModeUpdate")]
+    public class bhaptics_onehanded
+    {
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            Plugin.twoHanded = false;
+        }
+    }
+
+
     [HarmonyPatch(typeof(GunController), "Fire", new Type[] { })]
     public class bhaptics_Fire
     {
@@ -93,10 +117,18 @@ namespace Compound_bhaptics
             {
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_L");
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_L");
+                if(Plugin.twoHanded)
+                {
+                    Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+                }
             } else
             {
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+                if (Plugin.twoHanded)
+                {
+                    Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_L");
+                }
             }
             Plugin.tactsuitVr.PlaybackHaptics("firevisor");
         }
@@ -120,6 +152,54 @@ namespace Compound_bhaptics
         }
     }
     
+    [HarmonyPatch(typeof(EmergencyFirearm), "FixedUpdate")]
+    public class bhaptics_OnEmergencyFirearm
+    {
+        [HarmonyPrefix]
+        public static void Prefix(EmergencyFirearm __instance)
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+
+            Vector3 vector3;
+            Damageable caseGlass = Traverse.Create(__instance).Field("CaseGlass").GetValue<Damageable>();
+            TrackedObjectPhysicsCalculator leftHand = Traverse.Create(__instance).Field("LeftHand").GetValue<TrackedObjectPhysicsCalculator>();
+            TrackedObjectPhysicsCalculator rightHand = Traverse.Create(__instance).Field("RightHand").GetValue<TrackedObjectPhysicsCalculator>();
+
+            if ((Object)caseGlass != (Object)null && (Object)leftHand != (Object)null)
+            {
+                vector3 = caseGlass.transform.position - leftHand.transform.position;
+                if ((double)vector3.sqrMagnitude < 0.022500000894069672)
+                {
+                    vector3 = caseGlass.transform.forward * Vector3.Dot(leftHand.GetSmoothedLinearVelocity(), 
+                        caseGlass.transform.forward);
+                    if ((double)vector3.sqrMagnitude > 1.0)
+                    {
+                        Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_L");
+                        Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_L");
+                    }
+                }
+            }
+
+            if ((Object)caseGlass != (Object)null && (Object)rightHand != (Object)null)
+            {
+                vector3 = caseGlass.transform.position - rightHand.transform.position;
+                if ((double)vector3.sqrMagnitude < 0.022500000894069672)
+                {
+                    vector3 = caseGlass.transform.forward * Vector3.Dot(rightHand.GetSmoothedLinearVelocity(),
+                        caseGlass.transform.forward);
+                    if ((double)vector3.sqrMagnitude > 1.0)
+                    {
+                        Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+                        Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+                    }
+                }
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(MutatorDisabler), "OnTriggerStay")]
     public class bhaptics_Shower
     {
