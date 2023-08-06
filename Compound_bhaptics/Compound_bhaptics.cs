@@ -43,6 +43,7 @@ namespace Compound_bhaptics
                 return;
             }
             Plugin.tactsuitVr.PlaybackHaptics("Eating");
+            Plugin.tactsuitVr.PlaybackHaptics("firevisor");
         }
     }
 
@@ -57,6 +58,7 @@ namespace Compound_bhaptics
                 return;
             }
             Plugin.tactsuitVr.PlaybackHaptics("Death");
+            Plugin.tactsuitVr.PlaybackHaptics("hurtvisor");
         }
     }
 
@@ -72,6 +74,7 @@ namespace Compound_bhaptics
             }
             var angleShift = TactsuitVR.getAngleAndShift(__instance.transform.parent, __instance.DamageableComponent.HitObject.transform.position);
             Plugin.tactsuitVr.PlayBackHit("BulletHit", angleShift.Key, angleShift.Value);
+            Plugin.tactsuitVr.PlaybackHaptics("hurtvisor");
         }
     }
 
@@ -95,6 +98,7 @@ namespace Compound_bhaptics
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
             }
+            Plugin.tactsuitVr.PlaybackHaptics("firevisor");
         }
     }
 
@@ -129,6 +133,7 @@ namespace Compound_bhaptics
             Plugin.tactsuitVr.PlaybackHaptics("Shower", false, 0.4f);
             Plugin.tactsuitVr.PlaybackHaptics("shower_L", false, 0.4f);
             Plugin.tactsuitVr.PlaybackHaptics("shower_R", false, 0.4f);
+            Plugin.tactsuitVr.PlaybackHaptics("showervisor");
         }
     }
 
@@ -144,7 +149,8 @@ namespace Compound_bhaptics
             }
             Plugin.tactsuitVr.PlaybackHaptics("SuperPower");
             Plugin.tactsuitVr.PlaybackHaptics("superpower_L");
-            Plugin.tactsuitVr.PlaybackHaptics("superpower_R");
+            Plugin.tactsuitVr.PlaybackHaptics("superpower_R"); 
+            Plugin.tactsuitVr.PlaybackHaptics("syringevisor");
         }
     }
 }
