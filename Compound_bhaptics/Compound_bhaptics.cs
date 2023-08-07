@@ -28,6 +28,9 @@ namespace Compound_bhaptics
             tactsuitVr = new TactsuitVR();
             // one startup heartbeat so you know the vest works correctly
             tactsuitVr.PlaybackHaptics("HeartBeat");
+            tactsuitVr.PlaybackHaptics("RecoilArm_R");
+            tactsuitVr.PlaybackHaptics("RecoilArm_L");
+            tactsuitVr.PlaybackHaptics("eatingvisor");
             // patch all functions
             var harmony = new Harmony("bhaptics.patch.compound");
             harmony.PatchAll();
@@ -46,7 +49,6 @@ namespace Compound_bhaptics
             }
             Plugin.tactsuitVr.PlaybackHaptics("eatingvisor");
             Plugin.tactsuitVr.PlaybackHaptics("Eating");
-            Plugin.tactsuitVr.PlaybackHaptics("firevisor");
         }
     }
 
@@ -112,6 +114,9 @@ namespace Compound_bhaptics
             {
                 return;
             }
+
+            Plugin.Log.LogMessage("FIRE " + Plugin.twoHanded);
+
             if (Traverse.Create(__instance).Property("IsLeftHandedGun").GetValue<Boolean>())
 
             {
