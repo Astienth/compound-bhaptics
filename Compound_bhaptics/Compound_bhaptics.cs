@@ -83,6 +83,27 @@ namespace Compound_bhaptics
         }
     }
 
+    [HarmonyPatch(typeof(Explosion), "CheckIfVisible")]
+    public class bhaptics_OnExplosion
+    {
+        [HarmonyPostfix]
+        public static void Postfix(bool __result)
+        {
+            if (Plugin.tactsuitVr.suitDisabled)
+            {
+                return;
+            }
+
+            if(__result)
+            {
+                Plugin.tactsuitVr.PlaybackHaptics("explosionarm_R");
+                Plugin.tactsuitVr.PlaybackHaptics("explosionarm_L");
+                Plugin.tactsuitVr.PlaybackHaptics("explosionvest");
+                Plugin.tactsuitVr.PlaybackHaptics("firevisor");
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(Grabber), "TwoHandGrabModeUpdate")]
     public class bhaptics_twohanded
     {
@@ -114,8 +135,6 @@ namespace Compound_bhaptics
             {
                 return;
             }
-
-            Plugin.Log.LogMessage("FIRE " + Plugin.twoHanded);
 
             if (Traverse.Create(__instance).Property("IsLeftHandedGun").GetValue<Boolean>())
 
