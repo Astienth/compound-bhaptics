@@ -17,8 +17,6 @@ namespace Compound_bhaptics
 #pragma warning restore CS0109
         public static TactsuitVR tactsuitVr;
 
-        public static bool twoHanded = false;
-
         private void Awake()
         {
             // Make my own logger so it can be accessed from the Tactsuit class
@@ -103,28 +101,7 @@ namespace Compound_bhaptics
             }
         }
     }
-
-    [HarmonyPatch(typeof(Grabber), "TwoHandGrabModeUpdate")]
-    public class bhaptics_twohanded
-    {
-        [HarmonyPostfix]
-        public static void Postfix()
-        {
-            Plugin.twoHanded = true;
-        }
-    }
     
-    [HarmonyPatch(typeof(Grabber), "OneHandGrabModeUpdate")]
-    public class bhaptics_onehanded
-    {
-        [HarmonyPostfix]
-        public static void Postfix()
-        {
-            Plugin.twoHanded = false;
-        }
-    }
-
-
     [HarmonyPatch(typeof(GunController), "Fire", new Type[] { })]
     public class bhaptics_Fire
     {
@@ -136,12 +113,14 @@ namespace Compound_bhaptics
                 return;
             }
 
+            bool hasSecondaryVRWrapper = (Object)Traverse.Create(__instance).Field("SecondaryVRWrapper").GetValue<SteamVRWrapper>() != (Object)null; 
+
             if (Traverse.Create(__instance).Property("IsLeftHandedGun").GetValue<Boolean>())
 
             {
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_L");
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_L");
-                if(Plugin.twoHanded)
+                if(hasSecondaryVRWrapper)
                 {
                     Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
                 }
@@ -149,7 +128,7 @@ namespace Compound_bhaptics
             {
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
                 Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
-                if (Plugin.twoHanded)
+                if (hasSecondaryVRWrapper)
                 {
                     Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_L");
                 }
@@ -168,7 +147,7 @@ namespace Compound_bhaptics
             {
                 return;
             }
-            //Plugin.Log.LogMessage(__instance.DamageableComponent.GetCurrentHealth());
+
             if (__instance.DamageableComponent.GetCurrentHealth() == 1)
             {
                 Plugin.tactsuitVr.PlaybackHaptics("HeartBeat", false);
