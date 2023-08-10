@@ -6,6 +6,7 @@ using HarmonyLib;
 using UnityEngine;
 using MyBhapticsTactsuit;
 using Object = UnityEngine.Object;
+using static UnityEngine.Scripting.GarbageCollector;
 
 namespace Compound_bhaptics
 {
@@ -197,6 +198,37 @@ namespace Compound_bhaptics
                     {
                         Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
                         Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+                    }
+                }
+            }
+
+            GameObject Firearm = Traverse.Create(__instance).Field("Firearm").GetValue<GameObject>();
+            Vector3 vector3Dif = Firearm.transform.position - Traverse.Create(__instance).Field("SpawnPosition").GetValue<Vector3>();
+            bool Moved = Traverse.Create(__instance).Field("Moved").GetValue<bool>();
+            float sqrMagnitude = vector3Dif.sqrMagnitude;
+
+            if ((double)sqrMagnitude > 1.0 / 1000.0 && !Moved)
+            {
+                Breakable componentInChildren = __instance.GetComponentInChildren<Breakable>();
+                if ((Object)componentInChildren != (Object)null)
+                {
+                    if ((Object)rightHand != (Object)null)
+                    {
+                        vector3 = caseGlass.transform.position - rightHand.transform.position;
+                        if ((double)vector3.sqrMagnitude < 0.022500000894069672)
+                        {
+                            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_R");
+                            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_R");
+                        }
+                    }
+                    if ((Object)leftHand != (Object)null)
+                    {
+                        vector3 = caseGlass.transform.position - leftHand.transform.position;
+                        if ((double)vector3.sqrMagnitude < 0.022500000894069672)
+                        {
+                            Plugin.tactsuitVr.PlaybackHaptics("RecoilArm_L");
+                            Plugin.tactsuitVr.PlaybackHaptics("RecoilVest_L");
+                        }
                     }
                 }
             }
