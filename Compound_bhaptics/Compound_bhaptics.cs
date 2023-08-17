@@ -86,14 +86,14 @@ namespace Compound_bhaptics
     public class bhaptics_OnExplosion
     {
         [HarmonyPostfix]
-        public static void Postfix(bool __result)
+        public static void Postfix(Explosion __instance, bool __result, Vector3 checkPosition)
         {
             if (Plugin.tactsuitVr.suitDisabled)
             {
                 return;
             }
 
-            if(__result)
+            if(__result && Vector3.Distance(checkPosition, __instance.transform.position) < 5f)
             {
                 Plugin.tactsuitVr.PlaybackHaptics("explosionarm_R");
                 Plugin.tactsuitVr.PlaybackHaptics("explosionarm_L");
